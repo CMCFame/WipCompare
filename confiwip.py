@@ -1,9 +1,20 @@
 import streamlit as st
 import pandas as pd
-from typing import Tuple, List
+from typing import Tuple, List, Dict
 import json
+import os
 
 # ... (previous functions remain the same)
+
+def save_config(config: Dict[str, any]):
+    with open('comparison_config.json', 'w') as f:
+        json.dump(config, f)
+
+def load_config() -> Dict[str, any]:
+    if os.path.exists('comparison_config.json'):
+        with open('comparison_config.json', 'r') as f:
+            return json.load(f)
+    return {}  # Return an empty dictionary if the file doesn't exist
 
 def visualize_differences(df: pd.DataFrame):
     diff_counts = df.apply(lambda x: x.astype(str).str.contains('/').sum())
@@ -47,8 +58,8 @@ def main():
                     )
                     
                     # Save configuration
-                    config = {'header_row': header_row, 'columns_to_compare': columns_to_compare}
-                    save_config(config)
+                    new_config = {'header_row': header_row, 'columns_to_compare': columns_to_compare}
+                    save_config(new_config)
                     st.success("Comparison settings saved for future use.")
         except Exception as e:
             st.error(f"An error occurred: {str(e)}")
