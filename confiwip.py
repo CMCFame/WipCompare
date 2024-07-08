@@ -1,46 +1,14 @@
 import streamlit as st
 import pandas as pd
-import plotly.graph_objects as go
 from typing import Tuple, List
 import json
 
-@st.cache_data
-def load_and_prepare_dataframe(file_path: str, header_row: int) -> pd.DataFrame:
-    df = pd.read_csv(file_path, header=header_row)
-    id_col = find_id_column(df)
-    df.set_index(id_col, inplace=True)
-    return df
-
-def compare_csv_files(file_path_1: str, file_path_2: str, acronym1: str, acronym2: str, header_row: int, columns_to_compare: List[str]) -> pd.DataFrame:
-    df1 = load_and_prepare_dataframe(file_path_1, header_row)
-    df2 = load_and_prepare_dataframe(file_path_2, header_row)
-    
-    if columns_to_compare:
-        df1 = df1[columns_to_compare]
-        df2 = df2[columns_to_compare]
-    
-    df1_aligned, df2_aligned = align_dataframes(df1, df2)
-    diff_mask = create_diff_mask(df1_aligned, df2_aligned)
-    
-    combined_values_df = combine_differences(df1_aligned, df2_aligned, diff_mask, acronym1, acronym2)
-    return combined_values_df
+# ... (previous functions remain the same)
 
 def visualize_differences(df: pd.DataFrame):
     diff_counts = df.apply(lambda x: x.astype(str).str.contains('/').sum())
-    fig = go.Figure(data=[go.Bar(x=diff_counts.index, y=diff_counts.values)])
-    fig.update_layout(title="Differences per Column", xaxis_title="Columns", yaxis_title="Number of Differences")
-    st.plotly_chart(fig)
-
-def save_config(config: dict):
-    with open('comparison_config.json', 'w') as f:
-        json.dump(config, f)
-
-def load_config() -> dict:
-    try:
-        with open('comparison_config.json', 'r') as f:
-            return json.load(f)
-    except FileNotFoundError:
-        return {}
+    st.subheader("Differences per Column")
+    st.bar_chart(diff_counts)
 
 def main():
     st.title('Enhanced CSV File Comparison Tool')
