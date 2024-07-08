@@ -68,7 +68,9 @@ def compare_csv_files(file_path_1: io.BytesIO, file_path_2: io.BytesIO, acronym1
     return combined_values_df
 
 def filter_empty_rows(df: pd.DataFrame) -> pd.DataFrame:
-    return df[df.iloc[:, 1:].astype(str).apply(lambda x: x.str.strip().ne('').any(), axis=1)]
+    # Check if any cell in each row (excluding the first column) is non-empty
+    mask = df.iloc[:, 1:].applymap(lambda x: str(x).strip() != '').any(axis=1)
+    return df[mask]
 
 def main():
     st.set_page_config(page_title="CSV File Comparison Tool", layout="wide")
@@ -88,19 +90,26 @@ def main():
             with st.spinner('Processing...'):
                 result_df = compare_csv_files(uploaded_file1, uploaded_file2, acronym1, acronym2)
                 if result_df is not None:
-                    st.success('Comparison complete!')
                     result_df = filter_empty_rows(result_df)
-                    st.dataframe(result_df, use_container_width=True)
-                    
-                    csv = result_df.to_csv(index=False).encode('utf-8')
-                    st.download_button(
-                        label="Download CSV",
-                        data=csv,
-                        file_name='differences_combined_values.csv',
-                        mime='text/csv',
-                    )
+                    if result_df.empty:
+                        st.info("No differences found between the two CSV files.")
+                    else:
+                        st.success('Comparison complete! Differences found:')
+                        st.dataframe(result_df, use_container_width=True)
+                        
+                        csv = result_df.to_csv(index=False).encode('utf-8')
+                        st.download_button(
+                            label="Download CSV",
+                            data=csv,
+                            file_name='differences_combined_values.csv',
+                            mime='text/csv',
+                        )
+                else:
+                    st.warning("Unable to compare the CSV files. Please check the file contents and try again.")
         except Exception as e:
             st.error(f"An unexpected error occurred: {str(e)}")
+    else:
+        st.info("Please upload both CSV files to begin the comparison.")
 
 if __name__ == "__main__":
     main()
