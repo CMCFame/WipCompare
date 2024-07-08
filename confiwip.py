@@ -3,6 +3,7 @@ import pandas as pd
 from typing import Tuple, List, Dict
 import json
 import os
+import csv
 
 def extract_acronym(file_name: str) -> str:
     if 'PROD' in file_name:
@@ -18,69 +19,30 @@ def find_id_column(df: pd.DataFrame) -> str:
             return col
     raise ValueError("No column containing 'Id' found")
 
+def detect_csv_dialect(file_path: str) -> csv.Dialect:
+    with open(file_path, 'r', newline='') as csvfile:
+        sample = csvfile.read(1024)
+        return csv.Sniffer().sniff(sample)
+
 @st.cache_data
 def load_and_prepare_dataframe(file_path: str, header_row: int) -> pd.DataFrame:
-    df = pd.read_csv(file_path, header=header_row)
+    dialect = detect_csv_dialect(file_path)
+    
+    # Read the first few lines to determine the actual header row
+    with open(file_path, 'r', newline='') as csvfile:
+        reader = csv.reader(csvfile, dialect)
+        for _ in range(header_row):
+            next(reader)
+        header = next(reader)
+    
+    # Now read the CSV file with the correct dialect and header
+    df = pd.read_csv(file_path, header=None, names=header, skiprows=header_row+1, dialect=dialect.__dict__)
+    
     id_col = find_id_column(df)
     df.set_index(id_col, inplace=True)
     return df
 
-def align_dataframes(df1: pd.DataFrame, df2: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
-    return df1.align(df2, join='outer', axis=0, fill_value='')
-
-def create_diff_mask(df1: pd.DataFrame, df2: pd.DataFrame) -> pd.DataFrame:
-    return df1 != df2
-
-def combine_differences(df1: pd.DataFrame, df2: pd.DataFrame, diff_mask: pd.DataFrame, acronym1: str, acronym2: str) -> pd.DataFrame:
-    combined_values = []
-    for i in range(len(diff_mask)):
-        row_combined = []
-        for col in diff_mask.columns:
-            if pd.isna(df1.iloc[i][col]) and not pd.isna(df2.iloc[i][col]):
-                row_combined.append(f' / {acronym2}: {df2.iloc[i][col]}')
-            elif not pd.isna(df1.iloc[i][col]) and pd.isna(df2.iloc[i][col]):
-                row_combined.append(f'{acronym1}: {df1.iloc[i][col]} / ')
-            elif not pd.isna(df1.iloc[i][col]) and not pd.isna(df2.iloc[i][col]) and (df1.iloc[i][col] != df2.iloc[i][col]):
-                row_combined.append(f'{acronym1}: {df1.iloc[i][col]} / {acronym2}: {df2.iloc[i][col]}')
-            else:
-                row_combined.append('')
-        combined_values.append(row_combined)
-    
-    combined_values_df = pd.DataFrame(combined_values, columns=diff_mask.columns, index=diff_mask.index)
-    combined_values_df.reset_index(inplace=True)
-    return combined_values_df
-
-def filter_empty_rows(df: pd.DataFrame) -> pd.DataFrame:
-    return df[df.apply(lambda row: row.drop(labels=[df.columns[0]]).astype(str).str.strip().any(), axis=1)]
-
-def compare_csv_files(file_path_1: str, file_path_2: str, acronym1: str, acronym2: str, header_row: int, columns_to_compare: List[str]) -> pd.DataFrame:
-    df1 = load_and_prepare_dataframe(file_path_1, header_row)
-    df2 = load_and_prepare_dataframe(file_path_2, header_row)
-    
-    if columns_to_compare:
-        df1 = df1[columns_to_compare]
-        df2 = df2[columns_to_compare]
-    
-    df1_aligned, df2_aligned = align_dataframes(df1, df2)
-    diff_mask = create_diff_mask(df1_aligned, df2_aligned)
-    
-    combined_values_df = combine_differences(df1_aligned, df2_aligned, diff_mask, acronym1, acronym2)
-    return combined_values_df
-
-def save_config(config: Dict[str, any]):
-    with open('comparison_config.json', 'w') as f:
-        json.dump(config, f)
-
-def load_config() -> Dict[str, any]:
-    if os.path.exists('comparison_config.json'):
-        with open('comparison_config.json', 'r') as f:
-            return json.load(f)
-    return {}  # Return an empty dictionary if the file doesn't exist
-
-def visualize_differences(df: pd.DataFrame):
-    diff_counts = df.apply(lambda x: x.astype(str).str.contains('/').sum())
-    st.subheader("Differences per Column")
-    st.bar_chart(diff_counts)
+# ... (rest of the functions remain the same)
 
 def main():
     st.title('Enhanced CSV File Comparison Tool')
@@ -97,12 +59,18 @@ def main():
             acronym1 = extract_acronym(uploaded_file1.name)
             acronym2 = extract_acronym(uploaded_file2.name)
 
-            df_preview = pd.read_csv(uploaded_file1, nrows=10)
+            # Save uploaded files to disk temporarily
+            with open("temp_file1.csv", "wb") as f:
+                f.write(uploaded_file1.getbuffer())
+            with open("temp_file2.csv", "wb") as f:
+                f.write(uploaded_file2.getbuffer())
+
+            df_preview = load_and_prepare_dataframe("temp_file1.csv", header_row)
             columns_to_compare = st.multiselect("Select columns to compare", df_preview.columns.tolist(), default=config.get('columns_to_compare', []))
             
             if st.button("Compare Files"):
                 with st.spinner('Processing...'):
-                    result_df = compare_csv_files(uploaded_file1, uploaded_file2, acronym1, acronym2, header_row, columns_to_compare)
+                    result_df = compare_csv_files("temp_file1.csv", "temp_file2.csv", acronym1, acronym2, header_row, columns_to_compare)
                     filtered_result_df = filter_empty_rows(result_df)
                     
                     st.success('Comparison complete!')
@@ -122,6 +90,11 @@ def main():
                     new_config = {'header_row': header_row, 'columns_to_compare': columns_to_compare}
                     save_config(new_config)
                     st.success("Comparison settings saved for future use.")
+
+            # Clean up temporary files
+            os.remove("temp_file1.csv")
+            os.remove("temp_file2.csv")
+
         except Exception as e:
             st.error(f"An error occurred: {str(e)}")
 
