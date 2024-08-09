@@ -81,7 +81,7 @@ def load_parameter_descriptions(file):
     return param_df
 
 # Load parameter descriptions
-param_file = 'parameter list.txt'
+param_file = 'configcompare.txt'
 param_df = load_parameter_descriptions(param_file)
 
 # Streamlit UI
@@ -128,12 +128,15 @@ def main():
 
     # Display parameter descriptions with hover functionality
     st.write("Parameter Descriptions")
-    for index, row in param_df.iterrows():
-        st.markdown(f"""
-        <div class="tooltip">{row['Pref Name']}
-            <span class="tooltiptext">{row['Description']}</span>
-        </div>
-        """, unsafe_allow_html=True)
+    if 'Pref Name' in param_df.columns and 'Description' in param_df.columns:
+        for index, row in param_df.iterrows():
+            st.markdown(f"""
+            <div class="tooltip">{row['Pref Name']}
+                <span class="tooltiptext">{row['Description']}</span>
+            </div>
+            """, unsafe_allow_html=True)
+    else:
+        st.error("The parameter file does not contain the required columns 'Pref Name' and 'Description'.")
 
     # CSS for tooltip
     st.markdown("""
