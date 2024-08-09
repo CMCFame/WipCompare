@@ -1,0 +1,111 @@
+		SIG Parameters - Roster Preferences
+ID	Pref Name	Description
+1025	Comment	A user can enter a comment up to 500 characters long in the Comment field. This comment can be viewed on the Callout Create page by clicking the cmt? link in the Roster Picker for that list
+-2	Mask	When the Mask checkbox is checked, the list will not be selectable for the Availability by Roster report
+1102	NoAdd	When the NoAdd roster preference is checked, employees can no longer be added to the list via List Maint > Add Employees or the Employee Modify page
+1012	NoView	Not found in the document provided.
+1019	Pointer	The Pointer roster preference is used to determine who is called first on callouts. It can be Last Called/Attempted, Last Accepted, or Keep Last Pointer.
+1054	LastAccept	If this attribute is selected with the Pointer option, the roster becomes a pointer list with the pointer being used to determine who is called first on callouts.
+1100	Swaps	Not found in the document provided.
+1077	SleepTime	Not found in the document provided.
+1073	Excl	Not found in the document provided.
+1058	NoCC	Not found in the document provided.
+1065	StbyDev	Not found in the document provided.
+1067	NumOnCall	Not found in the document provided.
+1055	QualNo	The Qualify No roster preference allows users to determine when employees who responded with a result of Qualify No will be called back.
+1023	PgrDly	Not found in the document provided.
+1066	EmpDly	Not found in the document provided.
+1082	MatchRule	Not found in the document provided.
+1104	Barrel	The Barrel roster preference is used to enable the Crew in a Barrel callout rule for a roster
+1109	Barrel2	The Barrel 2 roster preference allows multiple crews to exist on a single list and allow ARCOS to call only the first crew on the list
+1074	Blast	The Blast roster preference enforces Blast Calling to be used for the roster regardless if it is enabled or not for the callout
+1114	CTT	The CTT roster preference determines how the list will be called when called in a Closest-to-Trouble callout
+1099	DNCA	The Do not Call Again roster preference when enabled enforces the "Do not Call Again" rule
+1105	DefQ	The Default Quantity roster preference controls what the default number of requested employees will be when a callout is created for the list
+1052	EndLap	Not found in the document provided.
+1057	ExAH	Not found in the document provided.
+1101	ExAND	Not found in the document provided.
+1095	FPF	Not found in the document provided.
+1106	IRF	Not found in the document provided.
+1113	Inactive	Not found in the document provided.
+1035	JARule-1	If the JvsA callout attribute is enabled and the rosters being called have the JvsA option set, the callout will process as described in the document.
+1080	JvsA	If the JvsA callout attribute is enabled and the rosters being called have the JvsA option set, the callout will process as described in the document.
+1107	KeepLast	If this attribute is selected with the Pointer option and the Last Accept Pointer, the roster becomes a pointer list with the pointer being used to determine who is called first on callouts.
+1044	Limit-1	Not found in the document provided.
+1083	LineDept	Not found in the document provided.
+1112	LinkRoll	Not found in the document provided.
+1059	NoRoll	Not found in the document provided.
+1060	NormOnly	Not found in the document provided.
+1078	NumDev	Not found in the document provided.
+1116	OnCallOnly	Not found in the document provided.
+1024	OvRest	Not found in the document provided.
+1072	PtrReset	The Pointer Reset roster preference allows users to set an exact time and day of the week the pointer will reset per roster basis.
+1042	Roll	The Rolling list method rotates all qualified employees to the bottom of the list after each callout if they are considered for callout based on their qualifications.
+1103	RosterDev	Not found in the document provided.
+1115	ShiftPref	Not found in the document provided.
+1075	SibCR	Not found in the document provided.
+1056	Skips	Not found in the document provided.
+1051	StLap	Not found in the document provided.
+1081	Alpha	Not found in the document provided.
+0	HrsSort	Not found in the document provided.
+1022	MaintainSort	Not found in the document provided.
+1094	SenSort	Not found in the document provided.
+-1	Rotate	Not found in the document provided.
+1068	VehRot	Not found in the document provided.
+1076	AddAfterPtr	Not found in the document provided.
+1011	Cutoff	Not found in the document provided.
+1063	ListAdj	Not found in the document provided.
+1062	NewAdj	Not found in the document provided.
+1111	ReSort	Not found in the document provided.
+1043	Reverse	Not found in the document provided.
+1061	Sticks	Not found in the document provided.
+1064	SvcDate	Not found in the document provided.
+1079	ZOTNSTB	Not found in the document provided.
+1013	BaseDate	Not found in the document provided.
+1014	Period	Not found in the document provided.
+1015	NumRosters	Not found in the document provided.
+1016	Cascade	Not found in the document provided.
+1017	CUM HRS	The Cumulative Hours field displays the total number of hours the employee has worked【10:17†source】.
+1117	DAILY HRS	Not found in the document provided.
+1110	AVG HRS	Not found in the document provided.
+1018	Accum OT	Not found in the document provided.
+1093	Assumed	Not found in the document provided.
+1071	DT	Not found in the document provided.
+1031	HRS Refused	Not found in the document provided.
+1027	HRS Worked	Not found in the document provided.
+1108	PCT HRS	Not found in the document provided.
+1096	Per Diem	Not found in the document provided.
+1069	ST	Not found in the document provided.
+1097	Turnover	Not found in the document provided.
+2000	manual	Is this a manual-only Callout Type?
+2001	worktime	The point at which to abandon a callout or stop accepting responses for an emergent callout. For Fill Shift Callouts, this should be set to the default length of your fill shift callouts.
+2002	checkstart	When considering availability, should ARCOS look at a single point in time or a range of time? If Normal Callouts evaluate a range of time, re-evaluate above answer or look at the Overlap section.
+2003	autoextend	Should the working record for this callout type auto-extend? Should the employee be auto-released at the start of the next shift if not previously released via Inbound or the web? Typically set to Yes for Normal Callout types.
+2004	ticket	Is there a Trouble Ticket entry field? Customer can control the terminology of the field (OMS Id, etc…). Is it required?
+2005	co_reason	Do we display the callout reason? Is the callout reason a required selection?
+2006	loc_vox	Should the Trouble Location be spoken to the employees? If so, is it the current Level 4 or should there be a drop-down menu?
+2007	custom_msg	Does a main-level custom message element show to the user? Is it required? The system will choose from Java, Flash Plugin, or HTML5 to provide the functionality.
+2008	subcustommsg	Should the user be able to select a custom message for sub-callouts under this callout Type? Should this be played in addition to the main level custom message or instead of the main message?
+2009	emaildev	Does this Callout Type allow the choice to email a user's device? Should it be defaulted? ARCOS will email in order to send a text message to an employee.
+2010	custommsgtxt	Are you able to enter Custom Message text for this Callout Type? Required for email devices. Can also be created on the Custom Message page.
+2011	subcustommsgtxt	Should the user be able to enter custom message text for sub-callouts under this callout Type? Goes along with sub-custom-msg and email.
+2012	pagerdelay	Should there be a pager Delay field for this Callout Type? Should it be a checkbox (static delay only), dropdown (static or dynamic)? What is the default pager delay (in seconds)? Should the delay be configured system-wide or location-specific? Does the customer have the ability to modify the pager delay? (Y, N)
+2013	blastcall	Should there be a Blast Calling field for this Callout Type? Should it be defaulted?
+2014	serialcall	Does this Callout Type use Serial Calling? Should it be checked by default?
+2015	jarule	Is the Journeyman/Apprentice rule in effect for this Callout Type? Should it be defaulted?
+2016	cun	Does this Callout Type keep calling? Should it be defaulted to yes?
+2017	nosched	Should this callout type skip checking schedules? Answer No if you want to check schedules.
+2018	listchain	Should I ALWAYS see all sequences from chained rosters when using this Callout Type? Should it be defaulted?
+2019	attempts	What is the maximum number of attempts available to the user in the drop-down? What should be the default value if you would like the callout to auto-resubmit (attempts > 1)?
+2020	resubmitdelay	If a re-submit is performed (via keep calling checkbox or sub-callout retry attempts), should there be a re-submit delay field for this Callout Type? Should there be a default value?
+2021	curravail	What should this Callout Type do if an employee is currently working? (call you, pop-up, duty-phone as top priority if present?)
+2022	picker	Which type of picker or selector should be available for this callout type? (e.g., location, roster, crew)
+2023	defpick	What is the default Picker (Location, Roster, Crew, etc…) used for this callout type.
+2024	inboundresp	Are you able to respond via IB to this Callout? Typically set to Yes.
+2025	eventid	Should the Event ID be tied to the working schedule record? Associates the Callout type with "Working - XXX Callout". This should be yes for all non-notification callout types. Typically used for SOS, BC, and other non-standard notification types.
+2026	charge	If Charges and Credits are applied, what is the attempt # where ARCOS begins to charge employees? (for that, and all subsequent attempts) (voluntary pass will be any pass less than this number)
+2027	intercept	Do you want to implement Answering Machine Intercept? Enter the amount of time in seconds before it initiates (45 is typical).
+2028	xfernum	This may (depending on hierarchy) be the transfer number for the callout.
+2029	ovall	Should an override all (schedule exceptions) field be displayed to the user? Checked by default?
+2030	runtime	Future Scheduled RunTime - Should this callout have the ability to be scheduled to run at a date/time in the future?
+2031	empdelay	Employee Delay - Should this callout type have an employee delay? If Roster Pref see Tab 7.
